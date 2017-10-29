@@ -5,33 +5,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Messenger Default User Model
+    | PayMob Default Order Model
     |--------------------------------------------------------------------------
     |
-    | This option defines the default User model.
+    | This option defines the default Order model.
     |
     */
 
-    'user' => [
-        'model' => 'App\User'
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Messenger Pusher Keys
-    |--------------------------------------------------------------------------
-    |
-    | This option defines pusher keys.
-    |
-    */
-
-    'pusher' => [
-        'app_id'     => '',
-        'app_key'    => '',
-        'app_secret' => '',
-        'options' => [
-            'cluster'   => '',
-            'encrypted' => true
-        ]
+    'order' => [
+        'model' => 'App\Order'
     ],
 ];
