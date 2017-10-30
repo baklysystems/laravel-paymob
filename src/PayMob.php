@@ -18,13 +18,13 @@ class PayMob
     }
 
     /**
-     * Send curl request to paymob servers.
+     * Send POST cURL request to paymob servers.
      *
      * @param  string  $url
      * @param  array  $json
      * @return array
      */
-    protected function curl($url, $json)
+    protected function cURL($url, $json)
     {
         // Create curl resource
         $ch = curl_init($url);
@@ -35,7 +35,35 @@ class PayMob
 
         // Return the transfer as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($json));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        // $output contains the output string
+        $output = curl_exec($ch);
+
+        // Close curl resource to free up system resources
+        curl_close($ch);
+        return json_decode($output);
+    }
+
+    /**
+     * Send GET cURL request to paymob servers.
+     *
+     * @param  string  $url
+     * @return array
+     */
+    protected function GETcURL($url)
+    {
+        // Create curl resource
+        $ch = curl_init($url);
+
+        // Request headers
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+
+        // Return the transfer as a string
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         // $output contains the output string
@@ -60,7 +88,7 @@ class PayMob
         ];
 
         // Send curl
-        $auth = $this->curl(
+        $auth = $this->cURL(
             'https://accept.paymobsolutions.com/api/auth/tokens',
             $json
         );
@@ -81,15 +109,15 @@ class PayMob
     {
         // Request body
         $json = [
-            'merchant_id' => $merchant_id,
-            'amount_cents' => $amount_cents,
-            'merchant_order_id' => $merchant_order_id,
-            'currency' => 'EGP',
+            'merchant_id'            => $merchant_id,
+            'amount_cents'           => $amount_cents,
+            'merchant_order_id'      => $merchant_order_id,
+            'currency'               => 'EGP',
             'notify_user_with_email' => true
         ];
 
         // Send curl
-        $order = $this->curl(
+        $order = $this->cURL(
             'https://accept.paymobsolutions.com/api/ecommerce/orders?token='.$token,
             $json
         );
@@ -115,36 +143,36 @@ class PayMob
           $token,
           $amount_cents,
           $order_id,
-          $email = 'null',
-          $fname = 'null',
-          $lname = 'null',
-          $phone = 'null',
-          $city = 'null',
+          $email   = 'null',
+          $fname   = 'null',
+          $lname   = 'null',
+          $phone   = 'null',
+          $city    = 'null',
           $country = 'null'
       ) {
         // Request body
         $json = [
             'amount_cents' => $amount_cents,
-            'expiration' => 36000,
-            'order_id' => $order_id,
+            'expiration'   => 36000,
+            'order_id'     => $order_id,
             "billing_data" => [
-                "email" => $email,
-                "first_name" => $fname,
-                "last_name" => $lname,
+                "email"        => $email,
+                "first_name"   => $fname,
+                "last_name"    => $lname,
                 "phone_number" => $phone,
-                "city" => $city,
-                "country" => $country,
-                'street' => 'null',
-                'building' => 'null',
-                'floor' => 'null',
-                'apartment' => 'null'
+                "city"         => $city,
+                "country"      => $country,
+                'street'       => 'null',
+                'building'     => 'null',
+                'floor'        => 'null',
+                'apartment'    => 'null'
             ],
-            'currency' => 'EGP',
+            'currency'            => 'EGP',
             'card_integration_id' => config('paymob.integration_id')
         ];
 
         // Send curl
-        $payment_key = $this->curl(
+        $payment_key = $this->cURL(
             'https://accept.paymobsolutions.com/api/acceptance/payment_keys?token='.$token,
             $json
         );
@@ -184,24 +212,24 @@ class PayMob
         // JSON body.
         $json = [
           'source' => [
-            'identifier' => $card_number,
+            'identifier'        => $card_number,
             'sourceholder_name' => $card_holdername,
-            'subtype' => 'CARD',
-            'expiry_month' => $card_expiry_mm,
-            'expiry_year' => $card_expiry_yy,
-            'cvn' => $card_cvn
+            'subtype'           => 'CARD',
+            'expiry_month'      => $card_expiry_mm,
+            'expiry_year'       => $card_expiry_yy,
+            'cvn'               => $card_cvn
            ],
           'billing' => [
-            'first_name' => $firstname,
-            'last_name' => $lastname,
-            'email' => $email,
+            'first_name'   => $firstname,
+            'last_name'    => $lastname,
+            'email'        => $email,
             'phone_number' => $phone,
            ],
           'payment_token' => $token
         ];
 
         // Send curl
-        $payment = $this->curl(
+        $payment = $this->cURL(
           'https://accept.paymobsolutions.com/api/acceptance/payments/pay',
           $json
         );
@@ -222,16 +250,78 @@ class PayMob
         // JSON body.
         $json = [
             'transaction_id' => $transactionId,
-            'amount_cents' => $amount
+            'amount_cents'   => $amount
         ];
 
         // Send curl.
-        $res = $this->curl(
+        $res = $this->cURL(
             'https://accept.paymobsolutions.com/api/acceptance/capture?token='.$token,
             $json
         );
 
         return $res;
+    }
+
+    /**
+     * Get PayMob all orders.
+     *
+     * @param  string  $authToken
+     * @return Response
+     */
+    public function getOrders($authToken)
+    {
+        $orders = $this->GETcURL(
+            "https://accept.paymobsolutions.com/api/ecommerce/orders?token={$authToken}"
+        );
+
+        return $orders;
+    }
+
+    /**
+     * Get PayMob order.
+     *
+     * @param  string  $authToken
+     * @param  int  $orderId
+     * @return Response
+     */
+    public function getOrder($authToken, $orderId)
+    {
+        $order = $this->GETcURL(
+            "https://accept.paymobsolutions.com/api/ecommerce/orders/{$orderId}?token={$authToken}"
+        );
+
+        return $order;
+    }
+
+    /**
+     * Get PayMob all transactions.
+     *
+     * @param  string  $authToken
+     * @return Response
+     */
+    public function getTransactions($authToken)
+    {
+        $transactions = $this->GETcURL(
+            "https://accept.paymobsolutions.com/api/acceptance/transactions?token={$authToken}"
+        );
+
+        return $transactions;
+    }
+
+    /**
+     * Get PayMob transaction.
+     *
+     * @param  string  $authToken
+     * @param  int  $transactionId
+     * @return Response
+     */
+    public function getTransaction($authToken, $transactionId)
+    {
+        $transaction = $this->GETcURL(
+            "https://accept.paymobsolutions.com/api/acceptance/transactions/{$transactionId}?token={$authToken}"
+        );
+
+        return $transaction;
     }
 
     /**
@@ -692,7 +782,7 @@ class PayMob
             return $error;
         } else {
             $methods = [
-                'availablie methods' => [
+                'availablie samples' => [
                     'authPaymob',
                     'makeOrderPaymob',
                     'getPaymentKeyPaymob',
