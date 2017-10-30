@@ -2,6 +2,13 @@
 
 A Laravel online payment gateway.
 
+## Table of Contents
+
+1.[Installation](#installation)
+
+2.[Steps to make a transaction on PayMob servers](#steps-to-make-a-transaction-on-paymob-servers)
+  1.[API Authentication Request (server side)](#1-api-authentication-request-server-side)
+
 ## Installation
 
 Require via composer
@@ -124,7 +131,6 @@ PayMob recommended iframe
 
       <input type="submit" value="Pay">
       <br>
-
 </form>
 ```
 
