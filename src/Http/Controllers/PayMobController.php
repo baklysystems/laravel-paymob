@@ -100,40 +100,42 @@ class PayMobController extends Controller
      * @param int $order_id
      * @return Response
      */
-    public function checkingOut($order_id)
+    public function checkingOut($orderId)
     {
-        $order          = Order::find($order_id);
-        $user           = User::find($order->user_id);
-        $fullname       = explode(' ', $user->name);
-        $auth           = $this->authPaymob(); // login paymob servers
+        $order       = config('paymob.order.model', 'App\Order')::find($orderId);
+        $user        = User::find($order->user_id);
+        $fullname    = explode(' ', $user->name);
+        $auth        = $this->authPaymob(); // login paymob servers
         if (property_exists($auth, 'detail')) {
             return redirect('tires');
         }
-        $payment_key    = $this->getPaymentKeyPaymob( // get payment key
+        $payment_key = $this->getPaymentKeyPaymob( // get payment key
             $auth->token,
             $order->totalCost * 100,
             $order->paymob_order_id,
             // For billing data
-            $user->email,
-            $user->firstname,
-            $user->lastname,
-            $user->phone,
-            $city->name
+            $user->email, // optional
+            $user->firstname, // optional
+            $user->lastname, // optional
+            $user->phone, // optional
+            $city->name // optional
+            $country->name // optional
         );
-        $token          = $payment_key->token;
+        $token       = $payment_key->token;
 
-        return view('frontend.checkout', compact('order', 'user', 'token'));
+        # code...
     }
 
     /**
      * Make payment on PayMob for API.
      *
-     * @param Reuqest $request
+     * @param  \Illuminate\Http\Reuqest  $request
      * @return Response
      */
     public function payAPI(Request $request)
     {
         $this->validate($request, [
+            'orderId'         => 'required|integer',
             'card_number'     => 'required|numeric|digits:16',
             'card_holdername' => 'required|string|max:255',
             'card_expiry_mm'  => 'required|integer|max:12',
@@ -144,14 +146,15 @@ class PayMobController extends Controller
         $user    = auth()->user();
         $order   = config('paymob.order.model', 'App\Order')::findOrFail($request->orderId);
         $payment = $this->makePayment( // make transaction on Paymob servers.
-          $order->payment_key_token,
+          $payment_key_token,
           $request->card_number,
           $request->card_holdername,
           $request->card_expiry_mm,
           $request->card_expiry_yy,
           $request->card_cvn,
           $order->paymob_order_id,
-          $user->name,
+          $user->firstname,
+          $user->lastname,
           $user->email,
           $user->phone
         );

@@ -37,6 +37,6 @@ return [
     |
     */
 
-    'integration_id' => ''
-    'iframe_id' => ''
+    'integration_id' => '',
+    'iframe_id' => '',
 ];
