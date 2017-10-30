@@ -9,105 +9,18 @@ class PayMobController extends Controller
 {
 
     /**
-     * Load cart checkout detilas with specific branch.
-     *
-     * @param /Illuminate/Http/Request $request
-     * @return Response
-     */
-    public function placeOrder(Request $request)
-    {
-        $this->validate($request, [
-            'fname' => 'required',
-            'lname' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'branchId' => 'required'
-        ]);
-
-        // Installer
-        $installer = Installer::find($request->installer);
-
-        // Add installation price to cart session
-        SessionCart::add(
-            $installer->id, // installer id
-            $installer, // installer object
-            1, // quantity
-            $request->installation_price, // installation price
-            ['type' => 'installer'] // type as installer to differentiate between installer and tires
-        );
-
-        // Will make fake account and login with it
-        User::userFakeLogin(
-            $request->email,
-            $request->fname,
-            $request->lname,
-            $request->phone
-        );
-
-        // Add items into users cart
-        $cart = Cart::current();
-        $items = SessionCart::content(); // get items from session cart
-        $installer_item = '';
-        foreach ($items as $item) {
-            if (!$item->options->type) {
-                $cart->add($item->name, $item->qty);
-            } else {
-                $installer_item = $item;
-            }
-        }
-        $totalPrice = $cart->totalPrice;
-
-        $installprice = $cart->OrderInstallPrice($request->branchId);
-
-        $order = $cart->placeOrder("unpaid");
-        $order->branch_id = $request->branchId;
-        $order->totalPrice = $totalPrice;
-        $order->totalCost = $totalPrice + $installprice;
-        $order->installPrice = $installprice;
-        $order->save();
-
-        $auth = $this->authPaymob(); // login paymob servers
-
-        if (property_exists($auth, 'detail')) {
-            SessionCart::destroy();
-            return redirect('tires');
-        }
-        $paymob_order = $this->makeOrderPaymob( // register order
-            $auth->token,
-            $auth->profile->id,
-            $order->totalCost * 100,
-            $order->id
-        );
-        // Duplicate order id
-        if (isset($paymob_order->message)) {
-            if ($paymob_order->message == 'duplicate') {
-                SessionCart::destroy();
-                return redirect('tires');
-            }
-        }
-        // Save paymob order id.
-        $order->paymob_order_id = $paymob_order->id;
-        $order->save();
-
-        // Flush cart session
-        SessionCart::destroy();
-        return redirect('/checking-out/'.$order->id);
-    }
-
-    /**
      * Display checkout page.
      *
-     * @param int $order_id
+     * @param  int  $orderId
      * @return Response
      */
     public function checkingOut($orderId)
     {
         $order       = config('paymob.order.model', 'App\Order')::find($orderId);
-        $user        = User::find($order->user_id);
-        $fullname    = explode(' ', $user->name);
-        $auth        = $this->authPaymob(); // login paymob servers
-        if (property_exists($auth, 'detail')) {
-            return redirect('tires');
+        # code... get order user.
+        $auth        = $this->authPaymob(); // login PayMob servers
+        if (property_exists($auth, 'detail')) { // login to PayMob attempt failed.
+            # code... redirect to previous page with a message.
         }
         $payment_key = $this->getPaymentKeyPaymob( // get payment key
             $auth->token,
@@ -121,13 +34,12 @@ class PayMobController extends Controller
             $city->name // optional
             $country->name // optional
         );
-        $token       = $payment_key->token;
 
-        # code...
+        # code... load view with iframe.
     }
 
     /**
-     * Make payment on PayMob for API.
+     * Make payment on PayMob for API (mobile clients).
      *
      * @param  \Illuminate\Http\Reuqest  $request
      * @return Response
@@ -208,6 +120,7 @@ class PayMobController extends Controller
 
     /**
      * Processed callback from PayMob servers.
+     * Save the route for this method in PayMob dashboard >> processed callback route.
      *
      * @param  \Illumiante\Http\Request  $request
      * @return  Response
@@ -237,6 +150,7 @@ class PayMobController extends Controller
 
     /**
      * Display invoice page (PayMob response callback).
+     * Save the route for this method to PayMob dashboard >> response callback route.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return Response
