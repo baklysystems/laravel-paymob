@@ -225,6 +225,19 @@ PayMob::getTransaction(
     $transactionId // PayMob transaction id from step 4.
 );
 ```
+
+### 5. Capture For Auth Transactions
+
+If your transactions is `auth` type (not `standalone`), then you have to capture your payment through `capture` method.
+
+```php
+PayMob::capture(
+    $auth->token, // token from step 1.
+    $transactionId, // the returned id from step 4.
+    $totalCost * 100 // total price/cost in cents/piasters.
+);
+```
+
 ## License
 
 Laravel PayMob is a free software distributed under the terms of the MIT license.
