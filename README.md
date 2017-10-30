@@ -4,10 +4,17 @@ A Laravel online payment gateway.
 
 ## Table of Contents
 
-1.[Installation](#installation)
-
-2.[Steps to make a transaction on PayMob servers](#steps-to-make-a-transaction-on-paymob-servers)
-  1.[API Authentication Request (server side)](#1-api-authentication-request-server-side)
+1. [Installation](#installation)
+2. [Steps to make a transaction on PayMob servers](#steps-to-make-a-transaction-on-paymob-servers)
+    1. [API Authentication Request (server side)](#1-api-authentication-request-server-side)
+    2. [Order Registration Request (server side)](#2-order-registration-request-server-side)
+    3. [Payment Key Generation Request (server side)](#3-payment-key-generation-request-server-side)
+    4. [Prepare Client Code to Perform Payment Request (Webclients and mobile apps) (client side)](#4-prepare-client-code-to-perform-payment-request-webclients-and-mobile-apps-client-side)
+        1. [Iframe for websites/webapps](#iframe-for-websiteswebapps)
+        2. [Mobile clients](#mobile-clients)
+3. [PayMobController](#paymobcontroller)
+4. [PayMob Postman Collection](#paymob-postman-collection)
+5. [Other PayMob Methods](#other-paymob-methods)
 
 ## Installation
 
@@ -162,3 +169,21 @@ PayMob::sample('responseCallback');
 ```
 
 You can use some [test cards](https://accept.paymobsolutions.com/docs/guide/online-guide/#test-cards) to make a test payment.
+
+You can run `PayMob::sample()` to see available samples.
+
+## PayMobController
+
+We have 4 methods in `PayMobController`.
+
+First use `checkingOut` method to display the payment form page with the iframe. Or simply make payment using `payAPI` method for mobile clients.
+
+Then, we have the `processedCallback` method to catch the `POST` callback response from PayMob servers, and `invoice` method to catch the `GET` callback response and display your invoice page.
+
+Don't forget to make routes for these methods, and to save the `processedCallback` and `invoice` routes in the integration details in PayMob dashboard.
+
+## PayMob Postman Collection
+
+There is a [Postman collection](PayMob.postman_collection.json) for PayMob requests.
+
+## Other PayMob Methods
