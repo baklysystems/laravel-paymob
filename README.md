@@ -16,6 +16,7 @@ A Laravel online payment gateway.
 3. [PayMobController](#paymobcontroller)
 4. [PayMob Postman Collection](#paymob-postman-collection)
 5. [Other PayMob Methods](#other-paymob-methods)
+6. [License](#license)
 
 ## Installation
 
@@ -224,3 +225,6 @@ PayMob::getTransaction(
     $transactionId // PayMob transaction id from step 4.
 );
 ```
+## License
+
+Laravel PayMob is a free software distributed under the terms of the MIT license.
