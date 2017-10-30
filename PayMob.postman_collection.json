@@ -1,0 +1,381 @@
+{
+	"variables": [],
+	"info": {
+		"name": "PayMob",
+		"_postman_id": "c8ad08f7-4bc0-ff4c-6e9d-f1cdeb351c19",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PayMob auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"_token\", body.token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://accept.paymobsolutions.com/api/auth/tokens",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"\",\n  \"password\": \"\"\n}"
+				},
+				"description": "requires {\n\tusername,\n\tpassword\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Make PayMob order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"order_id\", body.id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/ecommerce/orders?token={{_token}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"ecommerce",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{_token}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"merchant_id\": \"180\",\n  \"amount_cents\": \"100\",\n  \"merchant_order_id\": 60019\n}"
+				},
+				"description": "requires {\n\tmerchant_id,\n\tamount_cents,\n\tmerchant_order_id\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get PayMob key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"payment_key\", body.token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/acceptance/payment_keys?token={{_token}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"acceptance",
+						"payment_keys"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{_token}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount_cents\": \"100\",\n  \"merchant_order_id\": 60017,\n  \"currency\": \"EGP\",\n  \"card_integration_id\": 329\n}"
+				},
+				"description": "requires {\n\tamount_cents,\n\tmerchant_order_id,\n\tcurrency,\n\tcard_integration_id\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Make payment",
+			"request": {
+				"url": "https://accept.paymobsolutions.com/api/acceptance/payments/pay",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"source\": {\n    \"identifier\": \"4987654321098769\",\n    \"sourceholder_name\": \"Test Account\",\n    \"subtype\": \"CARD\",\n    \"expiry_month\": \"05\",\n    \"expiry_year\": \"21\",\n    \"cvn\": \"123\"\n  },\n  \"billing\": {\n    \"first_name\": \"Post\",\n    \"last_name\": \"man\",\n    \"email\": \"test@example.com\",\n    \"phone_number\": \"00201234567890\"\n  },\n  \"payment_token\": \"{{payment_key}}\"\n}"
+				},
+				"description": "requires {\n\tidentifier, //card number\n\tsourceholder_name,\n\tsubtype,\n\texpiry_month,\n\texpiry_year,\n\tcvn,\n\tfirst_name,\n\tlast_name,\n\temail,\n\tphone_number,\n\tpayment_token\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Auth capture",
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/acceptance/capture?token={{_token}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"acceptance",
+						"capture"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{_token}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"transaction_id\": 31157,\n\t\"amount_cents\": 33300\n}"
+				},
+				"description": "requires {\n\ttransaction_id,\n\tamount_cents\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get iframe",
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/acceptance/iframes/1707?payment_token={{payment_key}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"acceptance",
+						"iframes",
+						"1707"
+					],
+					"query": [
+						{
+							"key": "payment_token",
+							"value": "{{payment_key}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Iframes"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all orders",
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/ecommerce/orders?token={{_token}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"ecommerce",
+						"orders"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{_token}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get order",
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/ecommerce/orders/59619?token={{_token}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"ecommerce",
+						"orders",
+						"59619"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{_token}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get all transactions",
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/acceptance/transactions?token={{_token}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"acceptance",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{_token}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get transaction",
+			"request": {
+				"url": {
+					"raw": "https://accept.paymobsolutions.com/api/acceptance/transactions/16693?token={{_token}}",
+					"protocol": "https",
+					"host": [
+						"accept",
+						"paymobsolutions",
+						"com"
+					],
+					"path": [
+						"api",
+						"acceptance",
+						"transactions",
+						"16693"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{_token}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
