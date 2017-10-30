@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use BaklySystems\PayMob\Facades\PayMob;
 
 class PayMobController extends Controller
 {
@@ -65,7 +66,7 @@ class PayMobController extends Controller
         $order->installPrice = $installprice;
         $order->save();
 
-        $auth = $this->authCurlPaymob(); // login paymob servers
+        $auth = $this->authPaymob(); // login paymob servers
 
         if (property_exists($auth, 'detail')) {
             SessionCart::destroy();
@@ -104,7 +105,7 @@ class PayMobController extends Controller
         $order          = Order::find($order_id);
         $user           = User::find($order->user_id);
         $fullname       = explode(' ', $user->name);
-        $auth           = $this->authCurlPaymob(); // login paymob servers
+        $auth           = $this->authPaymob(); // login paymob servers
         if (property_exists($auth, 'detail')) {
             return redirect('tires');
         }
@@ -112,12 +113,12 @@ class PayMobController extends Controller
             $auth->token,
             $order->totalCost * 100,
             $order->paymob_order_id,
-            // For billing date
+            // For billing data
             $user->email,
-            $fullname[0],
-            $fullname[1],
-            $user->phone->first()->phone,
-            $order->branch->areas->first()->city->name
+            $user->firstname,
+            $user->lastname,
+            $user->phone,
+            $city->name
         );
         $token          = $payment_key->token;
 
@@ -125,12 +126,12 @@ class PayMobController extends Controller
     }
 
     /**
-     * Make payment on Paymob for API.
+     * Make payment on PayMob for API.
      *
      * @param Reuqest $request
      * @return Response
      */
-    public function pay(Request $request)
+    public function payAPI(Request $request)
     {
         $this->validate($request, [
             'card_number'     => 'required|numeric|digits:16',
@@ -203,7 +204,7 @@ class PayMobController extends Controller
     }
 
     /**
-     * Processed callback from paymob servers.
+     * Processed callback from PayMob servers.
      *
      * @param  \Illumiante\Http\Request  $request
      * @return  Response
@@ -232,7 +233,7 @@ class PayMobController extends Controller
     }
 
     /**
-     * Display invoice page (paymob response callback).
+     * Display invoice page (PayMob response callback).
      *
      * @param  \Illuminate\Http\Request  $request
      * @return Response

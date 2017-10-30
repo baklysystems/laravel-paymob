@@ -14,8 +14,10 @@ class PayMobServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            // config file.
+            // Config file.
             __DIR__.'/config/paymob.php' => config_path('paymob.php'),
+            // Controller
+            __DIR__.'/Http/Controllers/PayMobController.php' => app_path('Http/Controllers/PayMobController.php'),
         ]);
     }
 
