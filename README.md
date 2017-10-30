@@ -12,6 +12,7 @@ A Laravel online payment gateway.
     4. [Prepare Client Code to Perform Payment Request (Webclients and mobile apps) (client side)](#4-prepare-client-code-to-perform-payment-request-webclients-and-mobile-apps-client-side)
         1. [Iframe for websites/webapps](#iframe-for-websiteswebapps)
         2. [Mobile clients](#mobile-clients)
+
 3. [PayMobController](#paymobcontroller)
 4. [PayMob Postman Collection](#paymob-postman-collection)
 5. [Other PayMob Methods](#other-paymob-methods)
@@ -40,11 +41,9 @@ In `config/app.php` file
 ];
 ```
 
-First of all, make an account on [WeAccept portal](https://www.weaccept.co/portal/login), then fill in the credentials in `config/paymob.php` file.
-Make sure to make an iframe in your dashboard and get the integration id for payment requests.
+First of all, make an account on [WeAccept portal](https://www.weaccept.co/portal/login), then fill in the credentials in `config/paymob.php` file. Make sure to make an iframe in your dashboard and get the integration id for payment requests.
 
 Fill in the processed callback and response callback routes in integration details with the routes for `processedCallback` and `invoice` methods in `PayMobController`
-
 
 ## Steps to make a transaction on PayMob servers
 
@@ -180,6 +179,8 @@ First use `checkingOut` method to display the payment form page with the iframe.
 
 Then, we have the `processedCallback` method to catch the `POST` callback response from PayMob servers, and `invoice` method to catch the `GET` callback response and display your invoice page.
 
+Replace all `#code ...` with your logic.
+
 Don't forget to make routes for these methods, and to save the `processedCallback` and `invoice` routes in the integration details in PayMob dashboard.
 
 ## PayMob Postman Collection
@@ -187,3 +188,39 @@ Don't forget to make routes for these methods, and to save the `processedCallbac
 There is a [Postman collection](PayMob.postman_collection.json) for PayMob requests.
 
 ## Other PayMob Methods
+
+There are some `GET` methods to get your data from PayMob.
+
+### 1\. Get All Orders
+
+```php
+PayMob::getOrders(
+    $auth->token // token from step 1.
+);
+```
+
+### 2\. Get a Specific Order
+
+```php
+PayMob::getOrder(
+    $auth->token, // token from step 1.
+    $order->paymob_order_id // PayMob order id from step 2.
+);
+```
+
+### 3\. Get All Transactions
+
+```php
+PayMob::getTransactions(
+    $auth->token // token from step 1.
+);
+```
+
+### 4\. Get a Specific Transaction
+
+```php
+PayMob::getTransaction(
+    $auth->token, // token from step 1.
+    $transactionId // PayMob transaction id from step 4.
+);
+```
