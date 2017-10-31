@@ -266,12 +266,13 @@ class PayMob
      * Get PayMob all orders.
      *
      * @param  string  $authToken
+     * @param  string  $page
      * @return Response
      */
-    public function getOrders($authToken)
+    public function getOrders($authToken, $page = 1)
     {
         $orders = $this->GETcURL(
-            "https://accept.paymobsolutions.com/api/ecommerce/orders?token={$authToken}"
+            "https://accept.paymobsolutions.com/api/ecommerce/orders?page={$page}&token={$authToken}"
         );
 
         return $orders;
@@ -297,12 +298,13 @@ class PayMob
      * Get PayMob all transactions.
      *
      * @param  string  $authToken
+     * @param  string  $page
      * @return Response
      */
-    public function getTransactions($authToken)
+    public function getTransactions($authToken, $page = 1)
     {
         $transactions = $this->GETcURL(
-            "https://accept.paymobsolutions.com/api/acceptance/transactions?token={$authToken}"
+            "https://accept.paymobsolutions.com/api/acceptance/transactions?page={$page}&token={$authToken}"
         );
 
         return $transactions;

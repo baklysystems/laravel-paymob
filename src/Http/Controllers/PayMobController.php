@@ -40,6 +40,7 @@ class PayMobController extends Controller
 
     /**
      * Make payment on PayMob for API (mobile clients).
+     * For PCI DSS Complaint Clients Only.
      *
      * @param  \Illuminate\Http\Reuqest  $request
      * @return Response

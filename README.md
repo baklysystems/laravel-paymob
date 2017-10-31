@@ -16,7 +16,8 @@ A Laravel online payment gateway.
 3. [PayMobController](#paymobcontroller)
 4. [PayMob Postman Collection](#paymob-postman-collection)
 5. [Other PayMob Methods](#other-paymob-methods)
-6. [License](#license)
+6. [TODO](#todo)
+7. [License](#license)
 
 ## Installation
 
@@ -196,7 +197,8 @@ There are some `GET` methods to get your data from PayMob.
 
 ```php
 PayMob::getOrders(
-    $auth->token // token from step 1.
+    $auth->token, // token from step 1.
+    $page // optional for pagination, by default set to 1
 );
 ```
 
@@ -213,7 +215,8 @@ PayMob::getOrder(
 
 ```php
 PayMob::getTransactions(
-    $auth->token // token from step 1.
+    $auth->token, // token from step 1.
+    $page // optional for pagination, by default set to 1
 );
 ```
 
@@ -237,6 +240,15 @@ PayMob::capture(
     $totalCost * 100 // total price/cost in cents/piasters.
 );
 ```
+
+## TODO
+
+1. Invoice page.
+2. Sample transaction cycle.
+3. Get all orders/transactions page.
+4. Refund from backend.
+5. Iframe with JS validations.
+6. Top level redirect request for 3D secure.
 
 ## License
 
