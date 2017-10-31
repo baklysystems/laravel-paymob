@@ -1,0 +1,48 @@
+{
+    "name": "baklysystems/laravel-paymob",
+    "description": "Laravel PayMob online payment gateway package",
+    "license": "MIT",
+    "keywords": [
+        "paymob",
+        "gateway",
+        "online",
+        "payment",
+        "php",
+        "laravel",
+        "egypt"
+    ],
+    "homepage": "https://github.com/baklysystems/laravel-paymob",
+    "authors": [
+        {
+            "name": "Mohamed Abdul-Fattah",
+            "email": "csmohamed8@gmail.com"
+        },
+        {
+            "name": "Mostafa El Bakly",
+            "email": "elbakly@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "laravel/framework": "5.*",
+        "illuminate/support": "5.5.*"
+    },
+    "autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "BaklySystems\\Paymob\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BaklySystems\\Paymob\\PayMobServiceProvider"
+            ],
+            "aliases": {
+                "Messenger": "BaklySystems\\PayMob\\Facades\\Paymob"
+            }
+        }
+    }
+}
