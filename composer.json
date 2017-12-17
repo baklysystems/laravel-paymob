@@ -41,7 +41,7 @@
                 "BaklySystems\\PayMob\\PayMobServiceProvider"
             ],
             "aliases": {
-                "Messenger": "BaklySystems\\PayMob\\Facades\\PayMob"
+                "PayMob": "BaklySystems\\PayMob\\Facades\\PayMob"
             }
         }
     }
