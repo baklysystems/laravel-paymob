@@ -18,11 +18,11 @@ class PayMobController extends Controller
     {
         $order       = config('paymob.order.model', 'App\Order')::find($orderId);
         # code... get order user.
-        $auth        = $this->authPaymob(); // login PayMob servers
+        $auth        = PayMob::authPaymob(); // login PayMob servers
         if (property_exists($auth, 'detail')) { // login to PayMob attempt failed.
             # code... redirect to previous page with a message.
         }
-        $payment_key = $this->getPaymentKeyPaymob( // get payment key
+        $payment_key = PayMob::getPaymentKeyPaymob( // get payment key
             $auth->token,
             $order->totalCost * 100,
             $order->paymob_order_id,
@@ -31,7 +31,7 @@ class PayMobController extends Controller
             $user->firstname, // optional
             $user->lastname, // optional
             $user->phone, // optional
-            $city->name // optional
+            $city->name, // optional
             $country->name // optional
         );
 
@@ -58,7 +58,7 @@ class PayMobController extends Controller
 
         $user    = auth()->user();
         $order   = config('paymob.order.model', 'App\Order')::findOrFail($request->orderId);
-        $payment = $this->makePayment( // make transaction on Paymob servers.
+        $payment = PayMob::makePayment( // make transaction on Paymob servers.
           $payment_key_token,
           $request->card_number,
           $request->card_holdername,
