@@ -31,15 +31,5 @@
         "psr-4": {
             "BaklySystems\\Paymob\\": "src/"
         }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "BaklySystems\\Paymob\\PayMobServiceProvider"
-            ],
-            "aliases": {
-                "Messenger": "BaklySystems\\PayMob\\Facades\\Paymob"
-            }
-        }
     }
 }
