@@ -32,16 +32,16 @@
             "database"
         ],
         "psr-4": {
-            "BaklySystems\\Paymob\\": "src/"
+            "BaklySystems\\PayMob\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "BaklySystems\\Paymob\\PayMobServiceProvider"
+                "BaklySystems\\PayMob\\PayMobServiceProvider"
             ],
             "aliases": {
-                "Messenger": "BaklySystems\\PayMob\\Facades\\Paymob"
+                "Messenger": "BaklySystems\\PayMob\\Facades\\PayMob"
             }
         }
     }
