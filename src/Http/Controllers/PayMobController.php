@@ -22,10 +22,25 @@ class PayMobController extends Controller
         if (property_exists($auth, 'detail')) { // login to PayMob attempt failed.
             # code... redirect to previous page with a message.
         }
+        $paymobOrder = PayMob::makeOrderPaymob( // make order on PayMob
+            $auth->token,
+            $auth->profile->id,
+            $order->totalCost * 100,
+            $order->id
+        );
+        // Duplicate order id
+        // PayMob saves your order id as a unique id as well as their id as a primary key, thus your order id must not
+        // duplicate in their database. 
+        if (isset($paymobOrder->message)) {
+            if ($paymobOrder->message == 'duplicate') {
+                # code... your order id is duplicate on PayMob database.
+            }
+        }
+        $order->update(['paymob_order_id' => $paymobOrder->id]); // save paymob order id for later usage.
         $payment_key = PayMob::getPaymentKeyPaymob( // get payment key
             $auth->token,
             $order->totalCost * 100,
-            $order->paymob_order_id,
+            $paymobOrder->id,
             // For billing data
             $user->email, // optional
             $user->firstname, // optional
