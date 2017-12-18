@@ -155,7 +155,7 @@ PayMob recommended iframe
 In case of mobile apps, you will need to import Accept native IOS or Android SDK to proceed with the payment and/or save the card details.
 
 Please request the needed SDK by emailing support@weaccept.co
-For more information visit (PayMob online guid)[https://accept.paymobsolutions.com/docs/guide/online-guide/#step-4-prepare-your-client-code-client-side]
+For more information visit [PayMob mobile guid](https://accept.paymobsolutions.com/docs/guide/online-guide/#step-4-prepare-your-client-code-client-side)
 
 ```php
 $payment = PayMob::makePayment(
