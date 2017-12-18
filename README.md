@@ -43,7 +43,11 @@ In `config/app.php` file
 ];
 ```
 
-First of all, make an account on [WeAccept portal](https://www.weaccept.co/portal/login), then fill in the credentials in `config/paymob.php` file. Make sure to make an iframe in your dashboard and get the integration id for payment requests.
+First of all, make an account on [WeAccept portal](https://www.weaccept.co/portal/login), run this command to generate the PayMob configuration file
+```bash
+$ php artisan vendor:publish    
+```
+Then fill in the credentials in `config/paymob.php` file. Make sure to make an iframe in your dashboard and get the integration id for payment requests.
 
 Fill in the processed callback and response callback routes in integration details with the routes for `processedCallback` and `invoice` methods in `PayMobController`
 
