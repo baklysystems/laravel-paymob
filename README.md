@@ -147,14 +147,19 @@ PayMob recommended iframe
 ```
 
 ```html
-<iframe src="https://accept.paymobsolutions.com/api/acceptance/iframes/{{config('paymob.iframe_id')}}?payment_token={{$payemntKey->token}}"></iframe>
+<iframe src="https://accept.paymobsolutions.com/api/acceptance/iframes/{{config('paymob.iframe_id')}}?payment_token={{$paymentKey->token}}"></iframe>
 ```
 
 #### Mobile clients
 
+In case of mobile apps, you will need to import Accept native IOS or Android SDK to proceed with the payment and/or save the card details.
+
+Please request the needed SDK by emailing support@weaccept.co
+For more information visit (PayMob online guid)[https://accept.paymobsolutions.com/docs/guide/online-guide/#step-4-prepare-your-client-code-client-side]
+
 ```php
 $payment = PayMob::makePayment(
-    $paymentKey->token, // payemnt key token from step 3.
+    $paymentKey->token, // payment key token from step 3.
     $request->card_number,
     $request->card_holdername,
     $request->card_expiry_mm,
