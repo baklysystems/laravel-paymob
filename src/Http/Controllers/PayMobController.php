@@ -147,9 +147,9 @@ class PayMobController extends Controller
         $order   = config('paymob.order.model', 'App\Order')::wherePaymobOrderId($orderId)->first();
 
         // Statuses.
-        $isSuccess  = $request['obj']['success'];
-        $isVoided   = $request['obj']['is_voided'];
-        $isRefunded = $request['obj']['is_refunded'];
+        $isSuccess  = filter_var($request['success'], FILTER_VALIDATE_BOOLEAN);
+        $isVoided  = filter_var($request['is_voided'], FILTER_VALIDATE_BOOLEAN);
+        $isRefunded  = filter_var($request['is_refunded'], FILTER_VALIDATE_BOOLEAN);
 
         if ($isSuccess && !$isVoided && !$isRefunded) { // transcation succeeded.
             $this->succeeded($order);
